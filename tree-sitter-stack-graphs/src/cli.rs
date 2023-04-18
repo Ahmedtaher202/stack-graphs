@@ -69,6 +69,7 @@ pub mod query;
 pub mod status;
 pub mod test;
 mod util;
+pub mod visualize;
 
 pub mod path_loading {
     use std::path::PathBuf;
@@ -85,6 +86,7 @@ pub mod path_loading {
     use crate::cli::query::QueryArgs;
     use crate::cli::status::StatusArgs;
     use crate::cli::test::TestArgs;
+    use crate::cli::visualize::VisualizeArgs;
 
     use super::database::DatabaseArgs;
 
@@ -99,6 +101,7 @@ pub mod path_loading {
         Query(Query),
         Status(Status),
         Test(Test),
+        Visualize(Visualize),
     }
 
     impl Subcommands {
@@ -113,6 +116,7 @@ pub mod path_loading {
                 Self::Query(cmd) => cmd.run(default_db_path),
                 Self::Status(cmd) => cmd.run(default_db_path),
                 Self::Test(cmd) => cmd.run(),
+                Self::Visualize(cmd) => cmd.run(default_db_path),
             }
         }
     }
@@ -249,6 +253,22 @@ pub mod path_loading {
             self.test_args.run(loader)
         }
     }
+
+    /// Visualize command
+    #[derive(clap::Parser)]
+    pub struct Visualize {
+        #[clap(flatten)]
+        db_args: DatabaseArgs,
+        #[clap(flatten)]
+        visualize_args: VisualizeArgs,
+    }
+
+    impl Visualize {
+        pub fn run(self, default_db_path: PathBuf) -> anyhow::Result<()> {
+            let db_path = self.db_args.get_or(default_db_path);
+            self.visualize_args.run(&db_path)
+        }
+    }
 }
 
 pub mod provided_languages {
@@ -265,6 +285,7 @@ pub mod provided_languages {
     use crate::cli::query::QueryArgs;
     use crate::cli::status::StatusArgs;
     use crate::cli::test::TestArgs;
+    use crate::cli::visualize::VisualizeArgs;
     use crate::loader::LanguageConfiguration;
 
     use super::database::DatabaseArgs;
@@ -279,6 +300,7 @@ pub mod provided_languages {
         Query(Query),
         Status(Status),
         Test(Test),
+        Visualize(Visualize),
     }
 
     impl Subcommands {
@@ -296,6 +318,7 @@ pub mod provided_languages {
                 Self::Query(cmd) => cmd.run(default_db_path),
                 Self::Status(cmd) => cmd.run(default_db_path),
                 Self::Test(cmd) => cmd.run(configurations),
+                Self::Visualize(cmd) => cmd.run(default_db_path),
             }
         }
     }
@@ -425,6 +448,22 @@ pub mod provided_languages {
         pub fn run(self, configurations: Vec<LanguageConfiguration>) -> anyhow::Result<()> {
             let loader = self.load_args.get(configurations)?;
             self.test_args.run(loader)
+        }
+    }
+
+    /// Visualize command
+    #[derive(clap::Parser)]
+    pub struct Visualize {
+        #[clap(flatten)]
+        db_args: DatabaseArgs,
+        #[clap(flatten)]
+        visualize_args: VisualizeArgs,
+    }
+
+    impl Visualize {
+        pub fn run(self, default_db_path: PathBuf) -> anyhow::Result<()> {
+            let db_path = self.db_args.get_or(default_db_path);
+            self.visualize_args.run(&db_path)
         }
     }
 }
