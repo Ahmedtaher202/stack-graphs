@@ -1,3 +1,4 @@
+![microsoft_edge_screenshot_May 14, 2023 1_15_34 AM GMT+03_00 png](https://github.com/github/stack-graphs/assets/86805223/8a0794cd-c259-42de-af3b-ed75a8b34d41)
 ---
 version = "1.4"
 aliases = ["/version/1/4"]
